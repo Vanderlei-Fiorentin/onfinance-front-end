@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-br">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+<head>
+    <base href="/">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Onfinance</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <meta name="description" content="Gerenciador financeiro">
+    <!-- Disable tap highlight on IE -->
+    <meta name="msapplication-tap-highlight" content="no">
+</head>
+
+<body>
+    <div class="app-container app-theme-white body-tabs-shadow">
+        <div class="app-container">
+            <div class="h-100 bg-premium-dark">
+                <div class="d-flex h-100 justify-content-center align-items-center">
+                    <div class="mx-auto app-login-box col-md-8">
+                        <div class="app-logo-inverse mx-auto mb-3"></div>
+                        <div class="modal-dialog w-100">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <h5 class="modal-title">
+                                        <h4 class="mt-2">
+                                            <div>Bem vindo,</div>
+                                            <span>Altere aqui <span class="text-success">em poucos segundos</span> a senha da sua conta</span>
+                                        </h4>
+                                    </h5>
+                                    <div class="divider row"></div>
+                                    <form #formulario="ngForm" (ngSubmit)="update()">
+                                        <div class="col-md-12">
+                                            <div class="mb-3">
+                                                <input [(ngModel)]="senha" name="senha" id="senha" placeholder="Nova senha..." type="password" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12"> 
+                                            <div class="mb-3">
+                                                <input [(ngModel)]="confirmacaoSenha" name="confirmacaoSenha" id="confirmacaoSenha" placeholder="Confirme a nova senha..."
+                                                    type="password" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer d-block text-center">
+                                            <button class="btn-wide btn-pill btn-shadow btn-hover-shine btn btn-primary btn-lg" type="submit" [disabled]="!formulario.valid">
+                                                Alterar senha
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>                                
+                            </div>
+                        </div>
+                        <div class="text-center text-white opacity-8 mt-3">Copyright © Onfinance 2021</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>>

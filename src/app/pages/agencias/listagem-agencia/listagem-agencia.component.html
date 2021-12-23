@@ -1,0 +1,68 @@
+<div class="header">
+    <h1 class="header-title">
+        Listagem de agências
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Listagem de agências</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="col-12 col-xl-12">
+    <div class="card">
+        <div class="card-header">           
+            <div class="row">                
+                <div class="col-md-4">
+                    <h5 class="card-title">Total de registros: {{ agencias.length }}</h5>
+                    <div class="position-relative form-group mt-4">
+                        <input [(ngModel)]="pesquisa" name="pesquisa" id="pesquisa" placeholder="Pesquisar" type="text" class="form-control" (keyup)="filtrar(pesquisa)">
+                    </div>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-2">
+                    <div class="page-actions">
+                        <button class="btn btn-outline-primary" routerLink="/agencias/cadastro">
+                            <i class="align-middle me-2 fas fa-fw fa-location-arrow mb-2"></i> 
+                            <span class="align-middle">Adicionar</span>
+                        </button> 
+                    </div>                    
+                </div>
+            </div>            
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Banco</th>
+                    <th>Agência</th>
+                    <th>Digito Verificador</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let agencia of agencias | paginate: { itemsPerPage: 10, currentPage: paginaAtual }">
+                    <td>
+                        <label class="form-check">
+                            <input type="checkbox" class="form-check-input" id="{{agencia.id}}">
+                        </label>
+                    </td>
+                    <td>{{ agencia.banco.nome }}</td>
+                    <td>{{ agencia.numero }}</td>
+                    <td>{{ agencia.digitoVerificador }}</td>
+                    <td class="table-action">
+                        <a [routerLink]="[agencia.id]" title="Editar">
+                            <i class="align-middle fas fa-fw fa-pen"></i>
+                        </a>
+                        <button class="btn" type="button" title="Excluir" (click)="remove(agencia.id)">
+                            <i class="align-middle fas fa-fw fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-end" style="margin-right: 40px;">
+        <pagination-controls (pageChange)="paginaAtual = $event" previousLabel="Anterior" nextLabel="Próximo"></pagination-controls>
+    </div>
+</div>

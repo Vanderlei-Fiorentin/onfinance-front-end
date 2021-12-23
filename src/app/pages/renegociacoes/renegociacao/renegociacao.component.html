@@ -1,0 +1,155 @@
+<div class="header">
+    <h1 class="header-title">
+        Renegociar Lançamentos de Saída
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Renegociar Lançamentos de Saída</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="col-12 col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5 class="card-title"></h5>
+                    <h6 class="card-subtitle text-muted"></h6>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form #formulario="ngForm" (ngSubmit)="save()">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="lancto">Lançamento</label>
+                            <ng-select [(ngModel)]="lancto" name="lancto" (change)="findParcelas(lancto)" required>
+                                <ng-option disabled selected [value]="">Selecione um lançamento</ng-option>
+                                <ng-option *ngFor="let lancto of lanctos" [value]="lancto">
+                                    {{lancto.empresa.nome + ' - ' + lancto.descricao}}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="parcelas">Parcelas em aberto</label>
+                            <input name="parcelas" id="parcelas" value="{{ totalParcelas }}" type="text" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="valorAberto">Valor Total em aberto</label>
+                            <input name="valorAberto" id="valorAberto" value="{{ valorTotal | currency:'R$' }}" type="text" class="form-control" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="parcelas">Selecionar Parcelas</label>
+                            <select multiple="" name="parcelas" id="parcelas" class="form-control" [(ngModel)]="renegociacao.parcelas" (change)="somarParcelas()" required>
+                                <option *ngFor="let parcela of parcelas" [ngValue]="parcela">
+                                    {{ parcela.parcela + ' - ' + (parcela.vencimento | date: 'dd/MM/yyyy') }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="valorTotal">Valor Renegociação</label>
+                            <input name="valorTotal" id="valorTotal" value="{{ valorParcelasSelecionadas | currency:'R$' }}" type="text" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="dataRenegociacao">Data Renegociação</label>
+                            <input [(ngModel)]="renegociacao.dataRenegociacao" name="dataRenegociacao" type="date" class="form-control" id="dataRenegociacao"
+                                placeholder="Digite a Data da Renegociação" required>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label>Tipo pagamento</label>
+                            <select class="mb-2 form-control" [(ngModel)]="renegociacao.tipoPagto" name="tipoPagto" required>
+                                <option value="" selected>Selecione o tipo</option>
+                                <option value="A">À vista</option>
+                                <option value="P">Parcelado</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="vencimento">Vencimento</label>
+                            <input [(ngModel)]="renegociacao.vencimento" name="vencimento" type="date" class="form-control" id="vencimento" placeholder="Digite o vencimento"
+                                [disabled]="renegociacao.tipoPagto == 'P'" required>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="qtdParcelas">Parcelas</label>
+                            <input [(ngModel)]="renegociacao.qtdParcelas" name="qtdParcelas"
+                                [disabled]="renegociacao.tipoPagto !== 'P'" id="qtdParcelas"
+                                placeholder="Quantidade de parcelas" type="number" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="exampleDiaPag">Dia pagamento</label>
+                            <input [(ngModel)]="renegociacao.diaPagamento" name="diaPagamento"
+                                [disabled]="formaPagto == 'C' || renegociacao.tipoPagto == 'A'" id="exampleDiaPag"
+                                placeholder="Digite o dia de pagamento" type="number" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="inicioVigencia">Início vigência</label>
+                            <input [(ngModel)]="renegociacao.inicioVigencia" name="inicioVigencia"
+                                [disabled]="renegociacao.tipoPagto == 'A'" id="inicioVigencia"
+                                placeholder="Início da vigência" type="number" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="valorEntrada">Valor de entrada</label>
+                            <input [(ngModel)]="renegociacao.valorEntrada" name="valorEntrada" id="valorEntrada"
+                                placeholder="Digite o valor de entrada" type="number" class="form-control"
+                                [disabled]="renegociacao.tipoPagto == 'A'">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="multa">Multa</label>
+                            <input [(ngModel)]="renegociacao.multa" name="multa" id="multa" type="number" class="form-control" placeholder="Digite a multa">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="juros">Juros</label>
+                            <input [(ngModel)]="renegociacao.juros" name="juros" type="number" class="form-control" id="juros" placeholder="Digite os juros">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="desconto">Desconto</label>
+                            <input [(ngModel)]="renegociacao.desconto" name="desconto" type="number" class="form-control" id="desconto" placeholder="Digite o desconto">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-primary" style="margin-top: 29px;" [disabled]="!formulario.valid">
+                            <i class="align-middle me-2 fas fa-fw fa-plus-circle"></i>
+                            <span class="align-middle">Salvar</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

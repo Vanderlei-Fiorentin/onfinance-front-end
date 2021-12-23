@@ -1,0 +1,427 @@
+<div class="header">
+    <h1 class="header-title">
+        Cadastro Lançamento Contábil
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Cadastro Lançamento Contábil</li>
+        </ol>
+    </nav>
+</div>
+<div class="col-12 col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="card-title"></h5>
+                    <h6 class="card-subtitle text-muted"></h6>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-2">
+                    <div class="page-actions">
+                        <button class="btn btn-outline-primary" routerLink="/lanctos">
+                            <i class="align-middle me-2 fas fa-fw fa-angle-double-left fa-lg mb-2"></i>
+                            <span class="align-middle">Voltar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="smartwizard-arrows-primary" class="wizard wizard-primary mb-4 sw sw-theme-arrows sw-justified">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link inactive" [ngClass]="page === 1 ? 'active' : 'done'">
+                            Geral<br><small>Informações gerais</small>
+                        </a>
+                    </li>
+                    <li class="nav-item" [hidden]="lancamento.tipoLancto !== 'S'">
+                        <a class="nav-link inactive" [ngClass]="page === 2 ? 'active' : 'done'">
+                            Produtos<br><small>Produtos do lançamento</small>
+                        </a>
+                    </li>
+                    <li class="nav-item" [hidden]="lancamento.tipoLancto !== 'E' && lancamento.tipoPagto !== 'T'">
+                        <a class="nav-link inactive" [ngClass]="page === 3 ? 'active' : 'done'">
+                            Eventos<br><small>Eventos do lançamento</small>
+                        </a>
+                    </li>
+                    <li class="nav-item" [hidden]="lancamento.tipoLancto !== 'E'">
+                        <a class="nav-link inactive" [ngClass]="page === 4 ? 'active' : 'done'">
+                            Lançamentos de saída<br><small>Saídas do lançamento</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link inactive" [ngClass]="page === 5 ? 'active' : 'done'">
+                            Confirmação<br><small>Finalizar lançamento</small>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="form-wizard-content" [ngSwitch]="page">
+                        <div *ngSwitchDefault class="tab-pane"> 
+                            <form #formLancto="ngForm" style="min-height: 439px;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="empresa">Empresa</label>
+                                            <ng-select [(ngModel)]="lancamento.empresa" id="empresa" name="empresa" required>
+                                                <ng-option disabled selected [value]="">
+                                                    Selecione uma empresa
+                                                </ng-option>
+                                                <ng-option *ngFor="let empresa of empresas" [value]="empresa">
+                                                    {{ empresa.nome }}
+                                                </ng-option>
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="dataLancto">Data</label>
+                                            <input [(ngModel)]="lancamento.dataLancto" name="dataLancto" type="date" class="form-control" id="dataLancto" placeholder="Digite a data do lancto" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="tipoLancto">Tipo Lançamento</label>
+                                            <select [(ngModel)]="lancamento.tipoLancto" class="mb-2 form-control" id="tipoLancto" name="tipoLancto" (ngSelected)="findByTipoLancto()" required>
+                                                <option value="">Selecione o tipo</option>
+                                                <option value="E">Entrada</option>
+                                                <option value="S">Saída</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label>Tipo pagamento</label>
+                                            <select class="mb-2 form-control" [(ngModel)]="lancamento.tipoPagto" name="tipoPagto" required>
+                                                <option value="">Selecione o tipo</option>
+                                                <option value="A">À vista</option>
+                                                <option value="F">Fixo</option>
+                                                <option value="P">Parcelado</option>
+                                                <option value="T" *ngIf="lancamento.tipoLancto == 'S'">
+                                                    Transferência
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="formaPagto">Forma pagamento</label>
+                                            <select [(ngModel)]="formaPagto" class="mb-2 form-control" id="formaPagto" name="formaPagto" required>
+                                                <option value="">Selecione uma forma</option>
+                                                <option value="D">Débito</option>
+                                                <option value="C" *ngIf="!lancamento.isTransferencia()">
+                                                    Crédito
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="parcelas">Parcelas</label>
+                                            <input [(ngModel)]="lancamento.parcelas" [disabled]="!lancamento.isParcelado()" id="parcelas" name="parcelas" type="number" class="form-control" required placeholder="Quantidade de parcelas">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="diaPagamento">Dia pagamento</label>
+                                            <input [(ngModel)]="lancamento.diaPagamento" [disabled]="lancamento.isDisabledDiaPagamento(formaPagto)" id="diaPagamento" name="diaPagamento" type="number" class="form-control" placeholder="Digite o dia de pagamento">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="inicioVigencia">Início vigência</label>
+                                            <input [(ngModel)]="lancamento.inicioVigencia" [disabled]="lancamento.isDisabledInicioVigencia()" id="inicioVigencia" name="inicioVigencia" type="number" class="form-control" placeholder="Início da vigência">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="valor">Valor</label>
+                                            <input [(ngModel)]="lancamento.valor" id="valor" name="valor" type="number" class="form-control" placeholder="Digite o valor" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="valorEntrada">Valor de entrada</label>
+                                            <input [(ngModel)]="lancamento.valorEntrada" [disabled]="lancamento.isDisabledValorEntrada()" id="valorEntrada" name="valorEntrada" type="number" class="form-control" placeholder="Digite o valor de entrada">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="juros">Juros</label>
+                                            <input [(ngModel)]="lancamento.juros" [disabled]="lancamento.isDisabledJuros()" id="juros" name="juros" type="number" class="form-control" placeholder="Digite os juros">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" *ngIf="formaPagto == 'D'">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="conta">Conta corrente Origem</label>
+                                            <ng-select [(ngModel)]="lancamento.conta" id="conta" name="conta">
+                                                <ng-option disabled selected [value]="">
+                                                    Selecione uma conta
+                                                </ng-option>
+                                                <ng-option *ngFor="let conta of contas" [value]="conta">
+                                                    {{ getNomeConta(conta) }}
+                                                </ng-option>
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" [hidden]="lancamento.tipoPagto !== 'T'">
+                                        <div class="mb-3">
+                                            <label for="contaDestino">Conta corrente Destino</label>
+                                            <ng-select [(ngModel)]="lancamento.contaDestino" id="contaDestino" name="contaDestino">
+                                                <ng-option disabled selected [value]="">
+                                                    Selecione uma conta
+                                                </ng-option>
+                                                <ng-option *ngFor="let conta of contas" [value]="conta">
+                                                    {{ getNomeConta(conta) }}
+                                                </ng-option>
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" *ngIf="formaPagto == 'C'">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="cartao">Cartão crédito</label>
+                                            <ng-select [(ngModel)]="lancamento.cartao" id="cartao" name="cartao">
+                                                <ng-option disabled selected [value]="lancamento.cartao">
+                                                    Selecione um cartão
+                                                </ng-option>
+                                                <ng-option *ngFor="let cartao of cartoes" [value]="cartao">
+                                                    {{ getNomeCartao(cartao) }}
+                                                </ng-option>
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label for="descricao">Descrição</label>
+                                            <textarea [(ngModel)]="lancamento.descricao" id="descricao" name="descricao" type="text" class="form-control" placeholder="Informe uma descrição"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div [hidden]="lancamento.tipoLancto !== 'S'" *ngSwitchCase="2" class="tab-pane">
+                            <form style="min-height: 439px;" [formGroup]="formProdutos" (ngSubmit)="addProduto()">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="produto">Produtos</label>
+                                            <ng-select formControlName="produto" id="produto">
+                                                <ng-option disabled selected [value]="">
+                                                    Selecione um produto
+                                                </ng-option>
+                                                <ng-option *ngFor="let produto of produtos" [value]="produto">
+                                                    {{ produto.nome }}
+                                                </ng-option>
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-3">
+                                            <label for="quantidade">Quantidade</label>
+                                            <input formControlName="quantidade" id="quantidade" type="number" class="form-control" placeholder="Informe a quantidade">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-3">
+                                            <label for="valor">Valor</label>
+                                            <input formControlName="valor" id="valor" type="number" class="form-control" placeholder="Informe o valor">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2" style="margin-top: 21px;">
+                                        <div class="mb-3">
+                                            <button type="submit" class="mr-2 btn btn-light" [disabled]="formProdutos.invalid">
+                                                <i class="align-middle me-2 fas fa-fw fa-plus"></i> 
+                                                <span class="align-middle">Adicionar</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" *ngFor="let prod of produtosAdicionados.all(); let i = index">
+                                    <div class="col-md-1">
+                                        <button class="btn btn-danger" type="button" (click)="produtosAdicionados.splice(i)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input disabled value="{{ prod.produtoLanctoSaidaID.produto.nome }}" type="text" class="form-control">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input disabled value="{{ prod.quantidade }}" type="text" class="form-control">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input disabled value="{{ prod.valor }}" type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div [hidden]="lancamento.tipoLancto !== 'E' && lancamento.tipoPagto !== 'T'" *ngSwitchCase="3" class="tab-pane">
+                            <form style="min-height: 439px;" [formGroup]="formEventos" *ngIf="formEventos" (ngSubmit)="addEventos()">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="evento">Eventos</label>
+                                            <ng-select formControlName="evento" id="evento">
+                                                <ng-option disabled selected [value]="">
+                                                    Selecione um evento
+                                                </ng-option>
+                                                <ng-option *ngFor="let evento of eventos" [value]="evento">
+                                                    {{ evento.nome }}
+                                                </ng-option>
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-3">
+                                            <label for="quantidade">Quantidade</label>
+                                            <input formControlName="quantidade" id="quantidade" placeholder="Informe a quantidade" type="number" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-3">
+                                            <label for="valor">Valor</label>
+                                            <input formControlName="valor" id="valor" placeholder="Informe o valor" type="number" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2" style="margin-top: 21px;">
+                                        <div class="mb-3">
+                                            <button type="submit" class="mr-2 btn btn-light" [disabled]="formEventos.invalid">
+                                                <i class="align-middle me-2 fas fa-fw fa-plus"></i>
+                                                <span class="align-middle">Adicionar</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" *ngFor="let eve of eventosAdicionados.all(); let i = index">
+                                    <div class="col-md-1">
+                                        <button class="btn btn-danger" type="button" (click)="eventosAdicionados.splice(i)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input disabled value="{{ eve.eventoLanctoEntradaID.evento.nome }}" type="text"
+                                            class="form-control">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input disabled value="{{ eve.quantidade }}" type="text" class="form-control">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input disabled value="{{ eve.valor }}" type="text" class="form-control">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input disabled value="{{ eve.eventoLanctoEntradaID.evento.tipo }}" type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div [hidden]="lancamento.tipoLancto !== 'E'" *ngSwitchCase="4" class="tab-pane">
+                            <form style="min-height: 439px;" [formGroup]="formLanctoSaida" *ngIf="formLanctoSaida" (ngSubmit)="addParcela()">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="lanctoSaida">Lançamentos de saída</label>
+                                            <ng-select (change)="findParcelasByLancto()" formControlName="lanctoSaida">
+                                                <ng-option disabled selected [value]="">
+                                                    Selecione um lançamento
+                                                </ng-option>
+                                                <ng-option *ngFor="let saida of saidas" [value]="saida">
+                                                    {{ saida.empresa.nome + ' - ' + saida.descricao }}
+                                                </ng-option>
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="parcelaLanctoSaida">Parcelas</label>
+                                            <ng-select formControlName="parcelaLanctoSaida" id="parcelaLanctoSaida">
+                                                <ng-option disabled selected [value]="">
+                                                    Selecione uma parcela
+                                                </ng-option>
+                                                <ng-option *ngFor="let parcela of parcelas" [value]="parcela">
+                                                    {{ 'Parcela ' + parcela.parcela + ' - Vencto: ' + (parcela.vencimento | date: 'dd/MM/yyyy') }}
+                                                </ng-option>
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2" style="margin-top: 21px;">
+                                        <div class="mb-3">
+                                            <button type="submit" class="mr-2 btn btn-light" [disabled]="formLanctoSaida.invalid">
+                                                <i class="align-middle me-2 fas fa-fw fa-plus"></i>
+                                                <span class="align-middle">Adicionar</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" *ngFor="let parc of parcelasAdicionadas.all(); let i = index">
+                                    <div class="col-md-1">
+                                        <button class="btn btn-danger" type="button" (click)="parcelasAdicionadas.splice(i)">
+                                            <i class="fa fa-trash "></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input disabled
+                                            value="{{ parc.saidaLanctoEntradaID.parcelaLanctoSaida.lanctoContabil.descricao }} "
+                                            type="text " class="form-control ">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input disabled
+                                            value="{{ parc.saidaLanctoEntradaID.parcelaLanctoSaida.parcela }} "
+                                            type="text " class="form-control">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input disabled
+                                            value="{{ parc.saidaLanctoEntradaID.parcelaLanctoSaida.valor }} "
+                                            type="text " class="form-control ">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div *ngSwitchCase="5" class="tab-pane">
+                            <div class="no-results" style="min-height: 439px;">                                
+                                <div class="results-subtitle mt-4 ">Deseja anexar algum documento?</div>
+                                <div class="row mt-3">
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">                                            
+                                            <span class="btn btn-default btn-file">
+                                                <input (change)="onChange($event)" name="documentos" id="documentos" type="file" multiple>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                </div>
+                                <div class="mt-3 mb-3"></div>
+                                <div class="text-center">
+                                    <button class="btn-shadow btn-wide btn btn-success btn-lg" (click)="save()">
+                                        Finalizar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="divider "></div>
+            <div class="clearfix ">
+                <button class="btn btn-primary" [disabled]="page == 5" (click)="setPagination(1)">
+                    <span class="align-middle">Próximo</span>
+                    <i class="align-middle me-2 fas fa-fw fa-angle-double-right"></i>                     
+                </button>
+                <button class="btn btn-success" [disabled]="page == 1" (click)="setPagination(-1)" style="margin-left: 20px;">
+                    <i class="align-middle me-2 fas fa-fw fa-angle-double-left"></i> 
+                    <span class="align-middle">Anterior</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

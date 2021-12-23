@@ -1,0 +1,67 @@
+<div class="header">
+    <h1 class="header-title">
+        Cadastro de agências
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Cadastro de agências</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="col-12 col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="card-title"></h5>
+                    <h6 class="card-subtitle text-muted"></h6>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-2">
+                    <div class="page-actions">
+                        <button class="btn btn-outline-primary" routerLink="/agencias">
+                            <i class="align-middle me-2 fas fa-fw fa-angle-double-left fa-lg mb-2"></i>
+                            <span class="align-middle">Voltar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form #formulario="ngForm" (ngSubmit)="save()">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="exampleCat" class="">Banco</label>
+                            <ng-select [(ngModel)]="agencia.banco" name="banco" class="custom" required>
+                                <ng-option disabled selected [value]="">Selecione um banco</ng-option>
+                                <ng-option *ngFor="let banco of bancos" [value]="banco">{{banco.nome}}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="numero" class="">Número</label>
+                            <input [(ngModel)]="agencia.numero" name="numero" type="number" class="form-control" id="numero" placeholder="Digite o número" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="digitoVerificador" class="">Digito Verificador</label>
+                            <input [(ngModel)]="agencia.digitoVerificador" name="digitoVerificador" type="number" class="form-control" id="digitoVerificador" placeholder="Digite o verificador" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 29px;" [disabled]="!formulario.valid">
+                            <i class="align-middle me-2 fas fa-fw fa-plus-circle"></i>
+                            <span class="align-middle">Salvar</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

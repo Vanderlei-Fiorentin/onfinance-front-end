@@ -1,0 +1,230 @@
+<div class="header">
+    <h1 class="header-title">
+        Extratos bancários
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Extratos bancários</li>
+        </ol>
+    </nav>
+</div>
+<div class="col-12 col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">Total de registros: {{ extratos.length }}</h5>            
+            <form [formGroup]="formulario" *ngIf="formulario" (ngSubmit)="filtrar()">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="conta">Conta Corrente</label>
+                            <ng-select formControlName="conta" id="conta">
+                                <ng-option disabled selected [value]="">Selecione uma conta</ng-option>
+                                <ng-option *ngFor="let conta of contas" [value]="conta">
+                                    {{ getNomeConta(conta) }}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label class="">Operação</label>
+                            <select class="mb-2 form-control" formControlName="operacao">
+                                <option value="T" selected>Todas</option>
+                                <option value="S">Débito</option>
+                                <option value="E">Crédito</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="periodoInicial" class="">Período Inicial</label>
+                            <input formControlName="periodoInicial" id="periodoInicial" placeholder="Digite o periodo inicial" type="date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="periodoFinal" class="">Período Final</label>
+                            <input formControlName="periodoFinal" id="periodoFinal" placeholder="Digite o periodo final" type="date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="mr-2 btn btn-light" style="margin-top: 21px;" [disabled]="!formulario.valid">
+                            <i class="align-middle me-2 fas fa-fw fa-search"></i> 
+                            <span class="align-middle">Filtrar</span>
+                        </button>
+                    </div>
+                </div>
+            </form>            
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Beneficiário</th>
+                    <th>Histórico</th>
+                    <th>Detalhes</th>
+                    <th>Crédito (R$)</th>
+                    <th>Débito (R$)</th>
+                    <th>Saldo (R$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let extrato of extratos | paginate: { id: 'extratos', itemsPerPage: 10, currentPage: paginaAtual }">
+                    <td>
+                        {{ extrato.dataOperacao | date: 'dd/MM/yyyy' }}
+                    </td>
+                    <td>
+                        {{ extrato.pagamento.fatura.empresa.nome }}
+                    </td>
+                    <td>
+                        {{ extrato.historico }}
+                    </td>
+                    <td>
+                        <div class="widget-content-right widget-content-actions">
+                            <button class="border-0 btn-transition btn btn-outline-light" title="Detalhes"
+                                (click)="findLancto(extrato.pagamento.fatura.id)" (click)="showModal=true">
+                                <a><i class="fa fa-file text-info"></i></a>
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        {{ extrato.operacao === 'E' && (extrato.pagamento.valor | currency:'R$') || '' }}
+                    </td>
+                    <td>
+                        {{ extrato.operacao === 'S' && (extrato.pagamento.valor | currency:'R$') || '' }}
+                    </td>
+                    <td class="{{ extrato.saldo < 0 && 'text-danger' || 'text-success' }}">
+                        {{ extrato.saldo | currency:'R$' }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-end" style="margin-right: 40px;">
+        <pagination-controls (pageChange)="paginaAtual = $event" previousLabel="Anterior" nextLabel="Próximo" id="extratos"></pagination-controls>
+    </div>
+</div>
+
+<!-- Modal Detalhes do Lançamento -->
+<div class="modal mt-5 fade" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+    [ngClass]="{'show': showModal}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Detalhamento do Lançamento</h5>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close"
+                    (click)="showModal=false">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form *ngIf="lancto.id > 0">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="">Empresa</label>
+                                <input value="{{ lancto.empresa.nome }}" name="empresa" id="empresa" type="text"
+                                    class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="exampleDtLancto" class="">Data</label>
+                                <input value="{{ lancto.dataLancto | date: 'dd/MM/yyyy' }}" name="dataLancto"
+                                    id="dataLancto" type="text" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="">Tipo Lançamento</label>
+                                <input value="{{ lancto.tipoLancto == 'E' && 'Entrada' || 'Saída' }}" name="tipoLancto"
+                                    id="tipoLancto" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="">Valor</label>
+                                <input value="{{ lancto.valor | currency:'R$' }}" name="valor" id="valor"
+                                    class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="">Juros</label>
+                                <input value="{{ lancto.juros | currency:'R$' }}" name="juros" id="juros"
+                                    class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="exampleParc" class="">Parcelas</label>
+                                <input value="{{ lancto.parcelas }}" name="parcelas" id="parcelas" class="form-control"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="exampleDiaPag" class="">Dia pagamento</label>
+                                <input value="{{ lancto.diaPagamento }}" name="diaPagamento" id="diaPagamento"
+                                    class="form-control" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="">Tipo pagamento</label>
+                                <input value="{{ lancto.getDescricaoTipoLancto()  }}" name="tipoPagto" id="tipoPagto"
+                                    class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="">Forma pagamento</label>
+                                <input value="{{ lancto.conta != null && 'Débito' || 'Crédito' }}" name="formaPagto"
+                                    id="formaPagto" class="form-control" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="lancto.conta != null">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="">Conta corrente Origem</label>
+                                <input value="{{ getNomeConta(lancto.conta) }}" name="origem" id="origem"
+                                    class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-12" [hidden]="lancto.tipoPagto !== 'T'">
+                            <div class="mb-3">
+                                <label class="">Conta corrente Destino</label>
+                                <input value="{{ getNomeConta(lancto.contaDestino) }}" name="destino" id="destino"
+                                    class="form-control" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="lancto.cartao != null">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="">Cartão crédito</label>
+                                <input value="{{ getNomeCartao(lancto.cartao) }}" name="cartao" id="cartao"
+                                    class="form-control" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="">Descrição</label>
+                                <textarea value="{{ lancto.descricao }}" name="descricao" id="descricao"
+                                    class="form-control" disabled> </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal"
+                        (click)="showModal=false">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>

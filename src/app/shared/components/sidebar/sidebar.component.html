@@ -1,0 +1,72 @@
+<ul class="sidebar-nav">
+    <li class="sidebar-header">
+        Main
+    </li>
+    <li class="sidebar-item active">
+        <a data-bs-target="#dashboards" data-bs-toggle="collapse" class="sidebar-link">
+            <i class="align-middle me-2 fas fa-fw fa-chart-pie"></i> <span class="align-middle">Dashboards</span>
+        </a>
+        <ul id="dashboards" class="sidebar-dropdown list-unstyled collapse show" data-bs-parent="#sidebar">
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/">Default</a>
+            </li>
+        </ul>
+    </li>
+    <li class="sidebar-header">
+        Cadastros
+    </li>
+    <li class="sidebar-item">
+        <a data-bs-target="#pages" data-bs-toggle="collapse" class="sidebar-link collapsed">
+            <i class="align-middle me-2 fas fa-fw fa-folder-plus"></i> <span class="align-middle">Cadastros</span>
+        </a>
+        <ul id="pages" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/usuarios">Usuários</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/empresas">Empresas</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/categorias">Categorias</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/unidades">Unidades de Medida</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/produtos">Produtos</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/eventos">Eventos</a></li>
+        </ul>
+    </li>
+    <li class="sidebar-item">
+        <a data-bs-target="#auth" data-bs-toggle="collapse" class="sidebar-link collapsed" href="#">
+            <i class="align-middle me-2 fas fa-fw fa-money-bill-wave"></i> 
+            <span class="align-middle">Dados Bancários</span>
+        </a>
+        <ul id="auth" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/bancos">Bancos</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/agencias">Agências</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/contas">Contas Corrente</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/bandeiras">Bandeiras</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/cartoes">Cartões de Crédito</a></li>
+        </ul>
+    </li>
+
+    <li class="sidebar-header">
+        Movimentos
+    </li>
+    <li class="sidebar-item">
+        <a data-bs-target="#ui" data-bs-toggle="collapse" class="sidebar-link collapsed">
+            <i class="align-middle me-2 fas fa-fw fa-donate"></i> <span class="align-middle">Movimentação</span>
+        </a>
+        <ul id="ui" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/lanctos">Lançamentos Contábeis</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/extratos">Extratos Bancários</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/faturas">Faturas</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/vincular-parcelas">Vincular Parcelas</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/renegociar">Renegociar Parcelas</a></li>
+        </ul>
+    </li>
+
+    <li class="sidebar-header">
+        Permissões
+    </li>
+    <li class="sidebar-item">
+        <a data-bs-target="#ui" data-bs-toggle="collapse" class="sidebar-link collapsed">
+            <i class="align-middle me-2 fas fa-fw fa-user-lock"></i> <span class="align-middle">Permissões/Roles</span>
+        </a>
+        <ul id="ui" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/roles">Roles</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" routerLink="/permissoes">Gerenciar Roles</a></li>
+        </ul>
+    </li>
+</ul>

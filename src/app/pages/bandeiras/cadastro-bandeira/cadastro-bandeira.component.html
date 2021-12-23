@@ -1,0 +1,60 @@
+<div class="header">
+    <h1 class="header-title">
+        Cadastro de bandeiras
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Cadastro de bandeiras</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="col-12 col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="card-title"></h5>
+                    <h6 class="card-subtitle text-muted"></h6>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-2">
+                    <div class="page-actions">
+                        <button class="btn btn-outline-primary" routerLink="/bandeiras">
+                            <i class="align-middle me-2 fas fa-fw fa-angle-double-left fa-lg mb-2"></i>
+                            <span class="align-middle">Voltar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form #formulario="ngForm" (ngSubmit)="save()">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="nome" class="">Nome</label>
+                            <input [(ngModel)]="bandeira.nome" name="nome" type="text" class="form-control" id="nome" placeholder="Nome da bandeira" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="logo" class="">Logo</label>
+                            <input (change)="onChange($event)" name="logo" type="file" class="form-control-file form-control" id="logo">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 29px;" [disabled]="!formulario.valid">
+                            <i class="align-middle me-2 fas fa-fw fa-plus-circle"></i>
+                            <span class="align-middle">Salvar</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

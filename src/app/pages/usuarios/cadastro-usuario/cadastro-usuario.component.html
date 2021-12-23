@@ -1,0 +1,211 @@
+<div class="header">
+    <h1 class="header-title">
+        Cadastro de usuários
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Cadastro de usuários</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="col-12 col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="card-title"></h5>
+                    <h6 class="card-subtitle text-muted"></h6>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-2">
+                    <div class="page-actions">
+                        <button class="btn btn-outline-primary" routerLink="/usuarios">
+                            <i class="align-middle me-2 fas fa-fw fa-angle-double-left fa-lg mb-2"></i>
+                            <span class="align-middle">Voltar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="smartwizard-arrows-primary" class="wizard wizard-primary mb-4 sw sw-theme-arrows sw-justified">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link inactive" [ngClass]="page === 1 ? 'active' : 'done'">
+                            Geral<br><small>Informações gerais</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link inactive" [ngClass]="page === 2 ? 'active' : 'done'">
+                            Perfil<br><small>Perfil do usuário</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link inactive" [ngClass]="page === 3 ? 'active' : 'done'">
+                            Permissões<br><small>Permissões do usuário</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link inactive" [ngClass]="page === 4 ? 'active' : 'done'">
+                            Confirmação<br><small>Finalizar Cadastro</small>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="form-wizard-content" [ngSwitch]="page">
+                        <div *ngSwitchDefault class="tab-pane">
+                            <form style="min-height: 439px;" [formGroup]="formUsuario" *ngIf="formUsuario">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="nome" class="">Nome</label>
+                                            <input formControlName="nome" name="nome" id="nome" placeholder="Digite o nome" type="text" class="form-control">
+                                            <div *ngIf="formUsuario.controls.nome.touched && formUsuario.controls.nome.invalid">
+                                                <span class="text-danger mt-2"><small>* O nome é obrigatório</small></span>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="email" class="">E-mail</label>
+                                            <input formControlName="email" name="email" id="email" placeholder="Digite um e-mail" type="email" class="form-control">
+                                            <div *ngIf="formUsuario.controls.email.touched && formUsuario.controls.email.invalid">
+                                                <span class="text-danger mt-2"><small>* Informe um e-mail válido</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="usuario" class="">Usuário</label>
+                                            <input formControlName="usuario" name="usuario" id="usuario" placeholder="Digite o usuário" type="text" class="form-control">
+                                            <div *ngIf="formUsuario.controls.usuario.touched && formUsuario.controls.usuario.invalid">
+                                                <span class="text-danger mt-2"><small>* O usuário é obrigatório</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="senha" class="">Senha</label>
+                                            <input formControlName="senha" name="senha" id="senha" placeholder="Digite uma senha" type="password" class="form-control">
+                                            <div *ngIf="formUsuario.controls.senha.touched && formUsuario.controls.senha.invalid">
+                                                <span class="text-danger mt-2"><small>* A senha é obrigatória</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="confirmarSenha" class="">Confirmar senha</label>
+                                            <input formControlName="confirmarSenha" name="confirmarSenha" id="confirmarSenha" placeholder="Confirme a senha" type="password" class="form-control">
+                                            <div *ngIf="formUsuario.controls.confirmarSenha.touched && formUsuario.controls.confirmarSenha.invalid">
+                                                <span class="text-danger mt-2"><small>* Informe novamente a senha</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                
+                                <div class="divider "></div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input formControlName="administrador" class="form-check-input" type="checkbox" name="administrador" id="administrador">
+                                                <label class="form-check-label" for="administrador">Administrador</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input formControlName="ativo" class="form-check-input" type="checkbox" name="ativo" id="ativo">
+                                                <label class="form-check-label" for="ativo">Ativo</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </form>
+                        </div>
+                        <div *ngSwitchCase="2" class="tab-pane">
+                            <form style="min-height: 439px;" [formGroup]="formPerfil" *ngIf="formPerfil">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="inscricao" class="">Cpf/Cnpj</label>
+                                            <input formControlName="inscricao" name="inscricao" id="inscricao" placeholder="Digite seu Cpf/Cnpj" type="text" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="nascimento" class="">Data Nascimento</label>
+                                            <input formControlName="dataNascimento" name="nascimento" id="nascimento" placeholder="Digite sua data de nascimento" type="date" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>  
+                                <div class="row">
+                                    <div class="col-md-6">                                        
+                                        <div class="mb-3">
+                                            <label for="foto" class="">Foto</label>
+                                            <input (change)="onChange($event)" name="foto" id="foto" type="file" class="form-control-file form-control">
+                                        </div>
+                                    </div>
+                                </div>  
+                                <div class="divider "></div>                        
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input formControlName="avisoFaturaVencida" class="form-check-input" type="checkbox" name="vencida" id="vencida">
+                                                <label class="form-check-label" for="vencida">Receber aviso fatura vencida</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input formControlName="avisoFaturaAVencer" class="form-check-input" type="checkbox" name="vencer" id="vencer">
+                                                <label class="form-check-label" for="vencer">Receber aviso fatura a vencer</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                                                
+                            </form>
+                        </div>               
+                        <div *ngSwitchCase="3" class="tab-pane">
+                            <form style="min-height: 439px;">
+                                <div class="row">
+                                    <div class="col-md-6" *ngFor="let role of roles">
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch" >
+                                                <input class="form-check-input" type="checkbox"  type="checkbox" name="role" id="role" (change)="onCheckboxChange($event, role)">
+                                                <label class="form-check-label" for="role"><strong>{{ role.nome }}</strong> ({{role.descricao }})</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                                  
+                            </form>
+                        </div>          
+                        <div *ngSwitchCase="4" class="tab-pane">
+                            <div class="no-results" style="min-height: 439px;">                                 
+                                <div class="text-center">
+                                    <button class="btn-shadow btn-wide btn btn-success btn-lg" (click)="save()">Finalizar Cadastro</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="divider "></div>
+            <div class="clearfix ">
+                <button class="btn btn-primary" [disabled]="page == 4" (click)="pagination(1)">
+                    <span class="align-middle">Próximo</span>
+                    <i class="align-middle me-2 fas fa-fw fa-angle-double-right"></i>                     
+                </button>
+                <button class="btn btn-success" [disabled]="page == 1" (click)="pagination(-1)" style="margin-left: 20px;">
+                    <i class="align-middle me-2 fas fa-fw fa-angle-double-left"></i> 
+                    <span class="align-middle">Anterior</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

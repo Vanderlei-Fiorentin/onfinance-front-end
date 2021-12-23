@@ -1,0 +1,110 @@
+<div class="header">
+    <h1 class="header-title">
+        Vincular Parcelas à Faturas
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Vincular Parcelas à Faturas</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="col-12 col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5 class="card-title"></h5>
+                    <h6 class="card-subtitle text-muted"></h6>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form #formulario="ngForm" (ngSubmit)="vincular()">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div style="border: solid 0.5px #e0dfdf; padding: 10px;">
+                            <div class="form-group">
+                                <div class="mb-3">
+                                    <label for="parcelaSelecionada">Parcelas</label>
+                                    <ng-select [(ngModel)]="parcelaSelecionada" name="parcelaSelecionada" required>
+                                        <ng-option disabled selected [value]="">
+                                            Selecione uma parcela
+                                        </ng-option>
+                                        <ng-option *ngFor="let parcela of parcelas" [value]="parcela">
+                                            {{parcela.lanctoContabil.empresa.nome + ' - ' + parcela.lanctoContabil.descricao}}
+                                        </ng-option>
+                                    </ng-select>
+                                </div>
+                                <div *ngIf="parcelaSelecionada.id > 0">
+                                <div class="mb-3">
+                                    <label for="beneficiario">Beneficiário</label>
+                                    <input name="beneficiario" id="beneficiario" value="{{ parcelaSelecionada.lanctoContabil.empresa.nome }}" type="text" class="form-control" disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="vencimento">Vencimento Original</label>
+                                    <input name="vencimento" id="vencimento" value="{{ parcelaSelecionada.vencimento | date: 'dd/MM/yyyy' }}" type="text" class="form-control" disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="numero">Nº da Parcela</label>
+                                    <input name="numero" id="numero" value="{{ parcelaSelecionada.parcela }}" type="text" class="form-control" disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="valor">Valor da Parcela</label>
+                                    <input name="valor" id="valor" value="{{ parcelaSelecionada.valor | currency:'R$' }}" type="text" class="form-control" disabled>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div style="border: solid 0.5px #e0dfdf; padding: 10px;">
+                            <div class="form-group">
+                                <div class="mb-3">
+                                    <label>Empresa</label>
+                                    <ng-select name="empresa" [(ngModel)]="empresaSelecionada" (change)="findFaturas()" required>
+                                        <ng-option disabled selected [value]="">
+                                            Selecione uma empresa
+                                        </ng-option>
+                                        <ng-option *ngFor="let empresa of empresas" [value]="empresa">
+                                            {{empresa.nome}}
+                                        </ng-option>
+                                    </ng-select>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Fatura a vincular</label>
+                                    <ng-select [(ngModel)]="faturaSelecionada" name="fatura" required>
+                                        <ng-option disabled selected [value]="">Selecione uma fatura</ng-option>
+                                        <ng-option *ngFor="let fatura of faturas" [value]="fatura.fatura">
+                                            {{ fatura.fatura.empresa.nome + ' - ' + (fatura.fatura.vencimento | date: 'dd/MM/yyyy') }}
+                                        </ng-option>
+                                    </ng-select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="vencimentoFatura">Vencimento</label>
+                                    <input name="vencimentoFatura" id="vencimentoFatura" value="{{ faturaSelecionada.vencimento | date: 'dd/MM/yyyy' }}" type="text" class="form-control" disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="valorFatura">Valor da Fatura</label>
+                                    <input name="valorFatura" id="valorFatura" value="{{ faturaSelecionada.valor | currency:'R$' }}" type="text" class="form-control" disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="valorTotal">Valor Total da Fatura</label>
+                                    <input name="valorTotal" id="valorTotal" value="{{ (faturaSelecionada.valor + parcelaSelecionada.valor) | currency:'R$' }}" type="text" class="form-control" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 29px;" [disabled]="!formulario.valid">
+                            <i class="align-middle me-2 fas fa-fw fa-plus-circle"></i>
+                            <span class="align-middle">Vincular</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

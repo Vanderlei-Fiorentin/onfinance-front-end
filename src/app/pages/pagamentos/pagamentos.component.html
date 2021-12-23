@@ -1,0 +1,193 @@
+<div class="header">
+    <h1 class="header-title">
+        Pagamento de fatura
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Pagamento de fatura</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="col-12 col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="card-title" *ngIf="formulario">{{ 'Nº Fatura: ' + pagamento.fatura.id }}</h5>
+                    <h6 class="card-subtitle text-muted"></h6>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-2">
+                    <div class="page-actions">
+                        <button class="btn btn-outline-primary" routerLink="/faturas">
+                            <i class="align-middle me-2 fas fa-fw fa-angle-double-left fa-lg mb-2"></i>
+                            <span class="align-middle">Voltar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form [formGroup]="formulario" *ngIf="formulario" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="mb-3">
+                            <label for="empresa">Beneficiário</label>
+                            <input value="{{ pagamento.fatura.empresa.nome }}" id="empresa" type="text" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="vencimento">Vencimento</label>
+                            <input value="{{ pagamento.fatura.vencimento | date: 'dd/MM/yyyy' }}" name="vencimento" id="vencimento" type="text" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="valorFatura">Valor Fatura</label>
+                            <input value="{{ pagamento.fatura.valor }}" name="valor" id="valorFatura" type="number" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="valorAberto">Valor Aberto</label>
+                            <input value="{{ valorEmAberto }}" 
+                                name="valorAberto" id="valorAberto" type="number" class="form-control" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">                    
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="multa">Multa</label>
+                            <input formControlName="multa" id="multa" placeholder="Digite a multa" type="number" class="form-control" (change)="onChangeValorPagamento()">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="juros">Juros</label>
+                            <input formControlName="juros" id="juros" placeholder="Digite os juros" type="number" class="form-control" (change)="onChangeValorPagamento()">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="desconto">Desconto</label>
+                            <input formControlName="desconto" id="desconto" placeholder="Digite o desconto" type="number" class="form-control" (change)="onChangeValorPagamento()">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="valor">Valor Pagamento</label>
+                            <input formControlName="valor" id="valor" placeholder="Digite o valor" type="number" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <div class="form-check form-switch" style="margin-top: 21px;">
+                                <input class="form-check-input" type="checkbox" formControlName="pagamentoMinimo" type="checkbox" id="pagamentoMinimo">
+                                <label class="form-check-label" for="pagamentoMinimo">Pagamento Mínimo</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="dataPagamento" class="">Data Pagamento</label>
+                            <input formControlName="dataPagamento" id="dataPagamento" type="date" class="form-control">
+                        </div>
+                    </div>                    
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="formaPagamento">Forma pagamento</label>
+                            <select class="mb-2 form-control" formControlName="formaPagamento" id="formaPagamento"> )>
+                                <option value="" selected>Selecione uma forma</option>
+                                <option value="D">Débito</option>
+                                <option value="C">Crédito</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="formulario.value.formaPagamento == 'D'">
+                        <div class="mb-3">
+                            <label for="conta">Conta corrente</label>
+                            <ng-select formControlName="conta" id="conta">
+                                <ng-option disabled selected [value]="pagamento.conta">
+                                    {{ (pagamento.conta != null) && getNomeConta(pagamento.conta) || 'Selecione uma conta' }}
+                                </ng-option>
+                                <ng-option *ngFor="let conta of contas" [value]="conta">
+                                    {{ getNomeConta(conta) }}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="formulario.value.formaPagamento == 'C'">
+                        <div class="mb-3">
+                            <label for="cartao">Cartão crédito</label>
+                            <ng-select formControlName="cartao" id="cartao">
+                                <ng-option disabled selected [value]="">
+                                    Selecione um cartão
+                                </ng-option>
+                                <ng-option *ngFor="let cartao of cartoes" [value]="cartao">
+                                    {{ getNomeCartao(cartao) }}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="documentos" class="">Documentos</label>
+                            <input (change)="onChange($event)" id="documentos" type="file" class="form-control-file form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="formulario.value.pagamentoMinimo">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-check form-switch mt-3">
+                                <input class="form-check-input" type="checkbox" formControlName="parcelarValorRestante" type="checkbox" id="parcelarValorRestante">
+                                <label class="form-check-label" for="parcelarValorRestante">Parcelar valor restante?</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="formulario.value.parcelarValorRestante" formGroupName="parcelamento">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="parcelas" class="">Parcelas</label>
+                            <input formControlName="parcelas" id="parcelas" type="number" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="vigencia" class="">Vigência</label>
+                            <input formControlName="vigencia" id="vigencia" type="number" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="jurosParcelamento" class="">Juros</label>
+                            <input formControlName="juros" id="jurosParcelamento" type="number" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="multaParcelamento" class="">Multa</label>
+                            <input formControlName="multa" id="multaParcelamento" type="number" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 29px;" [disabled]="faturaPaga == true || formulario.invalid">
+                            <i class="align-middle me-2 fas fa-fw fa-plus-circle"></i>
+                            <span class="align-middle">Pagar</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

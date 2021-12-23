@@ -1,0 +1,134 @@
+<div class="header">
+    <h1 class="header-title">
+        Alterar cartão de crédito
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Alterar cartão de crédito</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="col-12 col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="card-title"></h5>
+                    <h6 class="card-subtitle text-muted"></h6>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-2">
+                    <div class="page-actions">
+                        <button class="btn btn-outline-primary" routerLink="/cartoes">
+                            <i class="align-middle me-2 fas fa-fw fa-angle-double-left fa-lg mb-2"></i>
+                            <span class="align-middle">Voltar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form #formulario="ngForm" (ngSubmit)="update()" *ngIf="cartao">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="conta">Conta corrente</label>
+                            <ng-select [(ngModel)]="cartao.conta" name="conta" id="conta" required>
+                                <ng-option disabled selected [value]="cartao.conta">
+                                    {{ getNomeConta(cartao.conta) }}
+                                </ng-option>
+                                <ng-option *ngFor="let conta of contas" [value]="conta">
+                                    {{ getNomeConta(conta) }}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="numero">Número</label>
+                            <input [(ngModel)]="cartao.numero" name="numero" type="number" class="form-control" id="numero" placeholder="Digite o número" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="bandeira">Bandeira</label>
+                            <ng-select [(ngModel)]="cartao.bandeira" name="bandeira" required>
+                                <ng-option disabled selected [value]="cartao.bandeira">
+                                    {{ cartao.bandeira.nome }}
+                                </ng-option>
+                                <ng-option *ngFor="let bandeira of bandeiras" [value]="bandeira">
+                                    {{ bandeira.nome }}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="diaVencto">Dia Vencimento</label>
+                            <input [(ngModel)]="cartao.diaVencto" name="diaVencto" type="number" class="form-control" id="diaVencto" placeholder="Digite o dia de vencimento do cartão" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="fechamento">Fechamento</label>
+                            <input [(ngModel)]="cartao.fechamento" name="fechamento" type="number" class="form-control" id="fechamento" placeholder="Digite o fechamento da fatura" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="validade">Validade</label>
+                            <input [(ngModel)]="cartao.validade" name="validade" type="date" class="form-control" id="validade" placeholder="Digite a data de validade do cartão" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="limite">Limite</label>
+                            <input [(ngModel)]="cartao.limite" name="limite" type="number" class="form-control" id="limite" placeholder="Digite o limite do cartão" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="limiteUtilizado">Limite utilizado</label>
+                            <input [(ngModel)]="cartao.limiteUtilizado" name="limiteUtilizado" type="number" class="form-control" id="limiteUtilizado" placeholder="Digite o limite utilizado" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <div class="mb-3"> 
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" [(ngModel)]="cartao.debitoAutomatico" type="checkbox" name="debitoAutomatico" id="debitoAutomatico">
+                                    <label class="form-check-label" for="debitoAutomatico">Débito automático</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <div class="mb-3"> 
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" [(ngModel)]="cartao.ativo" type="checkbox" name="situacao" id="situacao">
+                                    <label class="form-check-label" for="situacao">Ativo</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 29px;" [disabled]="!formulario.valid">
+                            <i class="align-middle me-2 fas fa-fw fa-plus-circle"></i>
+                            <span class="align-middle">Alterar</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

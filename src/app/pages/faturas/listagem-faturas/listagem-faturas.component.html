@@ -1,0 +1,222 @@
+<div class="header">
+    <h1 class="header-title">
+        Listagem de faturas
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Listagem de faturas</li>
+        </ol>
+    </nav>
+</div>
+<div class="col-12 col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row mb-4 mt-4">
+                <div class="col-md-4">
+                    <h5 class="card-title">Total de registros: {{ faturas.length }}</h5>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-2"></div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="position-relative form-group">
+                        <label class="">Beneficiário</label>
+                        <ng-select [(ngModel)]="empresa" name="empresa">
+                            <ng-option selected [value]="0">Todas</ng-option>
+                            <ng-option *ngFor="let empresa of empresas" [value]="empresa">{{empresa.nome}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="position-relative form-group">
+                        <label class="">Usuário</label>
+                        <ng-select [(ngModel)]="usuario" name="usuario">
+                            <ng-option selected [value]="0">Todos</ng-option>
+                            <ng-option *ngFor="let usuario of usuarios" [value]="usuario">{{usuario.nome}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="position-relative form-group">
+                        <label class="">Situação</label>
+                        <select class="mb-2 form-control" name="situacao" [(ngModel)]="situacao">
+                            <option value="TD" selected>Todas</option>
+                            <option value="A">À vencer</option>
+                            <option value="P">Paga</option>
+                            <option value="V">Vencida</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="position-relative form-group">
+                        <label for="periodoInicial" class="">Período Inicial</label>
+                        <input [(ngModel)]="periodoInicial" name="periodoInicial" id="periodoInicial"
+                            placeholder="Digite o periodo inicial" type="date" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="position-relative form-group">
+                        <label for="periodoFinal" class="">Período Final</label>
+                        <input [(ngModel)]="periodoFinal" name="periodoFinal" id="periodoFinal"
+                            placeholder="Digite o periodo final" type="date" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="position-relative form-group">
+                        <label class="">Tipo Lançamento</label>
+                        <select class="mb-2 form-control" name="tipoLancto" [(ngModel)]="tipoLancto">
+                            <option value="TD" selected>Todos</option>
+                            <option value="E">Entrada</option>
+                            <option value="S">Saída</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="position-relative form-group">
+                        <label class="">Tipo Pagamento</label>
+                        <ng-select
+                            #select
+                            [items]="tiposPagamentos"
+                            [multiple]="true"
+                            [maxSelectedItems]="4"
+                            bindLabel="value"
+                            bindValue="index"
+                            [(ngModel)]="tipoPagto">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="mr-2 btn btn-light" style="margin-top: 21px;" (click)="filtrar()">
+                        <i class="align-middle me-2 fas fa-fw fa-search"></i> <span class="align-middle">Filtrar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Beneficiário</th>
+                    <th>Vencimento</th>
+                    <th>Valor</th>
+                    <th>Juros</th>
+                    <th>Multa</th>
+                    <th>Desconto</th>
+                    <th>Usuário</th>
+                    <th>Situação</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let pagamento of faturas | paginate: { id: 'faturas', itemsPerPage: 10, currentPage: pageFaturas }">
+                    <td>
+                        <label class="form-check">
+                            <input type="checkbox" class="form-check-input" id="{{pagamento.id}}"
+                                (change)="onCheckboxChange($event, pagamento)">
+                        </label>
+                    </td>
+                    <td>{{ pagamento.fatura.empresa.nome }}</td>
+                    <td>{{ pagamento.fatura.vencimento | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ pagamento.fatura.valor | currency:'R$' }}</td>
+                    <td>{{ pagamento.juros | currency:'R$' }}</td>
+                    <td>{{ pagamento.multa | currency:'R$' }}</td>
+                    <td>{{ pagamento.desconto | currency:'R$' }}</td>
+                    <td>{{ findUsuarioFatura(pagamento) }}</td>
+                    <td>
+                        <span class="badge bg-success" *ngIf="situacaoFatura(pagamento) == 'P'">Paga</span>
+                        <span class="badge bg-warning" *ngIf="situacaoFatura(pagamento) == 'A'">À vencer</span>
+                        <span class="badge bg-danger" *ngIf="situacaoFatura(pagamento) == 'V'">Vencida</span>
+                    </td>
+                    <td>
+                        <div class="widget-content-right widget-content-actions">
+                            <button [disabled]="pagamento.valor >= pagamento.fatura.valor"
+                                class="border-0 btn-transition btn btn-outline-light" title="Pagar">
+                                <a routerLink="/pagamentos/{{pagamento.fatura.id}}" target="_self" style="color: lightslategray;">
+                                    <i class="fa fa-check"></i>
+                                </a>
+                            </button>
+                            <button [disabled]="pagamento.valor >= pagamento.fatura.valor"
+                                class="border-0 btn-transition btn btn-outline-light" title="Editar">
+                                <a style="color: lightslategray;">
+                                    <i class="align-middle fas fa-fw fa-pen"></i>
+                                </a>
+                            </button>
+                            <button (click)="findParcelas(pagamento.fatura.id)"
+                                class="border-0 btn-transition btn btn-outline-light" title="Detalhes" (click)="showModal=true">
+                                <a style="color: lightslategray;">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td><h6 class="card-subtitle text-muted">Valor Total: {{ (valores > 0 && valores || valorTotal) | currency:'R$' }}</h6></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="text-end" style="margin-right: 40px;">
+        <pagination-controls (pageChange)="pageFaturas = $event" previousLabel="Anterior" nextLabel="Próximo" id="faturas"></pagination-controls>
+    </div>
+</div>
+
+<!-- Modal Detalhes da fatura -->
+<div class="modal mt-5 fade" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" [class.show]="showModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Detalhamento da fatura</h5>
+                <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="showModal=false">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table style="width: 100%;" id="parcelas" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Parcela</th>
+                            <th>Beneficiário</th>
+                            <th>Descrição</th>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            *ngFor="let parcela of parcelas | paginate: { id: 'parcelas', itemsPerPage: 7, currentPage: pageParcelas }">
+                            <td>{{ parcela.lanctoContabil.tipoLancto == 'E' && 'Entrada' || 'Saída' }}</td>
+                            <td>{{ parcela.parcela + '/' + parcela.lanctoContabil.parcelas }}</td>
+                            <td>{{ parcela.lanctoContabil.empresa.nome }}</td>
+                            <td>{{ parcela.lanctoContabil.descricao }}</td>
+                            <td>{{ parcela.lanctoContabil.dataLancto | date: 'dd/MM/yyyy' }}</td>
+                            <td>{{ parcela.valor | currency:'R$' }}</td>
+                            <td>
+                                <button (click)="desvincularParcela(parcela)"
+                                    class="border-0 btn-transition btn btn-outline-info" title="Desvincular parcela" (click)="showModal=false">
+                                    <a><i class="fa fa-trash"></i></a>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-end" style="margin-right: 40px;">
+                <pagination-controls (pageChange)="pageParcelas = $event" previousLabel="Anterior" nextLabel="Próximo" id="parcelas"></pagination-controls>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal" (click)="showModal=false">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
