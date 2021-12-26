@@ -123,10 +123,10 @@
                     </td>
                     <td>{{ pagamento.fatura.empresa.nome }}</td>
                     <td>{{ pagamento.fatura.vencimento | date: 'dd/MM/yyyy' }}</td>
-                    <td>{{ pagamento.fatura.valor | currency:'R$' }}</td>
-                    <td>{{ pagamento.juros | currency:'R$' }}</td>
-                    <td>{{ pagamento.multa | currency:'R$' }}</td>
-                    <td>{{ pagamento.desconto | currency:'R$' }}</td>
+                    <td>{{ pagamento.fatura.valor | currency:'R$ ' }}</td>
+                    <td>{{ pagamento.juros | currency:'R$ ' }}</td>
+                    <td>{{ pagamento.multa | currency:'R$ ' }}</td>
+                    <td>{{ pagamento.desconto | currency:'R$ ' }}</td>
                     <td>{{ findUsuarioFatura(pagamento) }}</td>
                     <td>
                         <span class="badge bg-success" *ngIf="situacaoFatura(pagamento) == 'P'">Paga</span>
@@ -159,7 +159,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td><h6 class="card-subtitle text-muted">Valor Total: {{ (valores > 0 && valores || valorTotal) | currency:'R$' }}</h6></td>
+                    <td><h6 class="card-subtitle text-muted">Valor Total: {{ (valores > 0 && valores || valorTotal) | currency:'R$ ' }}</h6></td>
                 </tr>
             </tfoot>
         </table>
@@ -200,7 +200,7 @@
                             <td>{{ parcela.lanctoContabil.empresa.nome }}</td>
                             <td>{{ parcela.lanctoContabil.descricao }}</td>
                             <td>{{ parcela.lanctoContabil.dataLancto | date: 'dd/MM/yyyy' }}</td>
-                            <td>{{ parcela.valor | currency:'R$' }}</td>
+                            <td>{{ parcela.valor | currency:'R$ ' }}</td>
                             <td>
                                 <button (click)="desvincularParcela(parcela)"
                                     class="border-0 btn-transition btn btn-outline-info" title="Desvincular parcela" (click)="showModal=false">

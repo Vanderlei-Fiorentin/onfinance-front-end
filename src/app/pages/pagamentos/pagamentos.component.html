@@ -46,14 +46,14 @@
                     <div class="col-md-2">
                         <div class="mb-3">
                             <label for="valorFatura">Valor Fatura</label>
-                            <input value="{{ pagamento.fatura.valor }}" name="valor" id="valorFatura" type="number" class="form-control" disabled>
+                            <input value="{{ pagamento.fatura.valor | currency:'R$ ' }}" name="valorFatura" id="valorFatura" type="text" class="form-control" disabled>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="mb-3">
                             <label for="valorAberto">Valor Aberto</label>
-                            <input value="{{ valorEmAberto }}" 
-                                name="valorAberto" id="valorAberto" type="number" class="form-control" disabled>
+                            <input value="{{ valorEmAberto | currency:'R$ ' }}" 
+                                name="valorAberto" id="valorAberto" type="text" class="form-control" disabled>
                         </div>
                     </div>
                 </div>
@@ -76,13 +76,19 @@
                             <input formControlName="desconto" id="desconto" placeholder="Digite o desconto" type="number" class="form-control" (change)="onChangeValorPagamento()">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="mb-3">
-                            <label for="valor">Valor Pagamento</label>
+                            <label for="valor">Valor</label>
                             <input formControlName="valor" id="valor" placeholder="Digite o valor" type="number" class="form-control">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <div class="mb-2">
+                            <label for="valorPagamento">Valor Pagamento</label>
+                            <input value="{{ valorPagamento | currency:'R$ ' }}" id="valorPagamento" type="text" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
                         <div class="mb-3">
                             <div class="form-check form-switch" style="margin-top: 21px;">
                                 <input class="form-check-input" type="checkbox" formControlName="pagamentoMinimo" type="checkbox" id="pagamentoMinimo">

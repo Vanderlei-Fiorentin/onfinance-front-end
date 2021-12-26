@@ -36,6 +36,10 @@ export class PagamentoModel {
         return parseFloat((this.fatura.valor - this.valor).toFixed(2));
     }
 
+    getValorPagamento(): number {
+        return parseFloat((this.valor + this.juros + this.multa - this.desconto).toFixed(2));
+    }
+
     isPaga(): boolean {
         return (this.getValorEmAberto() > 0) ? false : true;
     }

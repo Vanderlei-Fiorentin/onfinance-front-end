@@ -57,7 +57,7 @@
                     <td>{{ cartao.bandeira.nome }}</td>
                     <td>{{ cartao.limite | currency:'R$' }}</td>
                     <td>{{ cartao.limiteUtilizado | currency:'R$' }}</td>
-                    <td>{{ cartao.validade }}</td>
+                    <td>{{ cartao.validade | date: 'dd/MM/yyyy' }}</td>
                     <td>{{ cartao.ativo === true && 'Ativo' || 'Inativo' }}</td>
                     <td class="table-action">
                         <a [routerLink]="[cartao.id]" title="Editar">

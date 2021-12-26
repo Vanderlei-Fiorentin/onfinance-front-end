@@ -88,13 +88,13 @@
                         </div>
                     </td>
                     <td>
-                        {{ extrato.operacao === 'E' && (extrato.pagamento.valor | currency:'R$') || '' }}
+                        {{ extrato.operacao === 'E' && (getValorPagamento(extrato) | currency:'R$ ') || '' }}
                     </td>
                     <td>
-                        {{ extrato.operacao === 'S' && (extrato.pagamento.valor | currency:'R$') || '' }}
+                        {{ extrato.operacao === 'S' && (getValorPagamento(extrato) | currency:'R$ ') || '' }}
                     </td>
                     <td class="{{ extrato.saldo < 0 && 'text-danger' || 'text-success' }}">
-                        {{ extrato.saldo | currency:'R$' }}
+                        {{ extrato.saldo | currency:'R$ ' }}
                     </td>
                 </tr>
             </tbody>

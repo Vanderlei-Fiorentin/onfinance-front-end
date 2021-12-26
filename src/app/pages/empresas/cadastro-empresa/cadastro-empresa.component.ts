@@ -30,7 +30,6 @@ export class CadastroEmpresaComponent implements OnInit {
   ngOnInit() { }
 
   save() {
-    alert('Realmente deseja salvar');
     this.empresaService.save(this.empresa).subscribe({
       next: () => {
         this.router.navigate(['empresas']);

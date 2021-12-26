@@ -5,6 +5,7 @@ import { CartaoCreditoModel } from 'src/app/core/models/cartao-credito.model';
 import { ContaCorrenteModel } from 'src/app/core/models/conta-corrente.model';
 import { ExtratoModel } from 'src/app/core/models/extrato.model';
 import { LanctoContabilModel } from 'src/app/core/models/lancto-contabil.model';
+import { PagamentoModel } from 'src/app/core/models/pagamento.model';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { ContaService } from 'src/app/core/services/conta.service';
 import { ExceptionService } from 'src/app/core/services/exception.service';
@@ -109,6 +110,10 @@ export class ExtratosComponent implements OnInit {
 
   getNomeCartao(cartao: CartaoCreditoModel) {
     return FunctionsUtil.getNomeCartao(cartao);
+  }
+
+  getValorPagamento(extrato: ExtratoModel): number {
+    return ExtratoModel.builder(extrato).getValorPagamento();
   }
 
 }

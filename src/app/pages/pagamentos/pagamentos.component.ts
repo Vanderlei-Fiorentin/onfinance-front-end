@@ -26,6 +26,7 @@ export class PagamentosComponent implements OnInit {
   documentos!: FileList;
   valorPago: number = 0;
   valorEmAberto: number = 0;
+  valorPagamento: number = 0;
   faturaPaga: boolean = false;
   parcelarRestanteValor: boolean = false;
   contas: ContaCorrenteModel[] = [];
@@ -57,7 +58,7 @@ export class PagamentosComponent implements OnInit {
     this.formulario = this.formBuilder.group({
       cartao: [null],
       conta: [null],
-      valor: [null, Validators.required],
+      valor: [this.pagamento.getValorEmAberto(), Validators.required],
       juros: [0],
       multa: [0],
       desconto: [0],
@@ -158,7 +159,7 @@ export class PagamentosComponent implements OnInit {
 
   onChangeValorPagamento() {
     this.valorEmAberto = (this.pagamento.getValorEmAberto() + this.formulario.value.multa + this.formulario.value.juros) - this.formulario.value.desconto;
-    this.formulario.get('valor')?.setValue(this.valorEmAberto.toFixed(2));
+    this.valorPagamento = (this.formulario.value.valor + this.formulario.value.multa + this.formulario.value.juros) - this.formulario.value.desconto;
   }
 
   onChange(event: any) {
